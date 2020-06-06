@@ -1,0 +1,25 @@
+
+os:
+    -linux
+
+addons:
+    apt:
+        - cmake
+        - cmake-data
+
+language: cpp
+
+compiler:
+    - clang
+    - gcc
+
+before_install:
+    - pip install --user cpp-coveralls
+
+script:
+    - cmake -H. -Bbuild -DBUILD_TESTS=ON -DCOVERAGE=ON
+    - cmake --build build/
+    - cmake --build build --target test -- ARGS=--verbose
+
+after_success:
+    - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"
